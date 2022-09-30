@@ -25,6 +25,7 @@ def validate(text: str, key: str, is_en: bool):
 
 def caesar_cipher(text: str, key: int, is_en: bool) -> str:
     old_alphabet = en_alphabet if is_en else ru_alphabet
+    old_alphabet = old_alphabet.upper() if text.isupper() else old_alphabet
     size = len(old_alphabet)
     new_alphabet = [old_alphabet[(i + key) % size] for i in range(size)]
     conversion = {old_alphabet[i]: new_alphabet[i] for i in range(size)}
