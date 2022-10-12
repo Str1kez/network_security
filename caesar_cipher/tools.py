@@ -14,9 +14,9 @@ def validate(text: str, key: str, is_en: bool):
         raise ValidationError('Пустой текст')
     if not key:
         raise ValidationError('Пустой ключ')
-    if is_en and (any(c in ru_alphabet for c in text.lower()) or any(c in ru_alphabet.upper() for c in text.upper())):
+    if is_en and any(c in ru_alphabet for c in text.lower()):
         raise ValidationError('Буквы не английские')
-    if not is_en and (any(c in en_alphabet for c in text.lower()) or any(c in en_alphabet.upper() for c in text.upper())):
+    if not is_en and any(c in en_alphabet for c in text.lower()):
         raise ValidationError('Буквы не русские')
     try:
         int(key)
