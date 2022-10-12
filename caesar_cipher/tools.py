@@ -1,5 +1,8 @@
-en_alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789'
-ru_alphabet = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя0123456789'
+en_alphabet = 'abcdefghijklmnopqrstuvwxyz'
+ru_alphabet = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя'
+digit = '0123456789'
+# en_alphabet_with_digit = en_alphabet + digit
+# ru_alphabet_with_digit = ru_alphabet + digit
 
 
 class ValidationError(Exception):
@@ -11,11 +14,9 @@ def validate(text: str, key: str, is_en: bool):
         raise ValidationError('Пустой текст')
     if not key:
         raise ValidationError('Пустой ключ')
-    if not text.islower() and not text.isupper():
-        raise ValidationError('Буквы не одного регистра')
-    if is_en and not all(c in en_alphabet for c in text.lower()):
+    if is_en and (any(c in ru_alphabet for c in text.lower()) or any(c in ru_alphabet.upper() for c in text.upper())):
         raise ValidationError('Буквы не английские')
-    if not is_en and not all(c in ru_alphabet for c in text.lower()):
+    if not is_en and (any(c in en_alphabet for c in text.lower()) or any(c in en_alphabet.upper() for c in text.upper())):
         raise ValidationError('Буквы не русские')
     try:
         int(key)
@@ -25,8 +26,17 @@ def validate(text: str, key: str, is_en: bool):
 
 def caesar_cipher(text: str, key: int, is_en: bool) -> str:
     old_alphabet = en_alphabet if is_en else ru_alphabet
-    old_alphabet = old_alphabet.upper() if text.isupper() else old_alphabet
     size = len(old_alphabet)
     new_alphabet = [old_alphabet[(i + key) % size] for i in range(size)]
     conversion = {old_alphabet[i]: new_alphabet[i] for i in range(size)}
-    return ''.join(conversion[c] for c in text)
+    new_digit = [digit[(i + key) % 10] for i in range(10)]
+    conversion_digit = {digit[i]: new_digit[i] for i in range(10)}
+    result = []
+    for c in text:
+        if c.isupper():
+            result.append(conversion.get(c.lower(), c).upper())
+        elif c.isdigit():
+            result.append(conversion_digit.get(c))
+        else:
+            result.append(conversion.get(c, c))
+    return ''.join(result)
