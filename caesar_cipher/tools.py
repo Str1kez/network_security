@@ -1,27 +1,4 @@
-en_alphabet = 'abcdefghijklmnopqrstuvwxyz'
-ru_alphabet = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя'
-digit = '0123456789'
-# en_alphabet_with_digit = en_alphabet + digit
-# ru_alphabet_with_digit = ru_alphabet + digit
-
-
-class ValidationError(Exception):
-    pass
-
-
-def validate(text: str, key: str, is_en: bool):
-    if not text:
-        raise ValidationError('Пустой текст')
-    if not key:
-        raise ValidationError('Пустой ключ')
-    if is_en and any(c in ru_alphabet for c in text.lower()):
-        raise ValidationError('Буквы не английские')
-    if not is_en and any(c in en_alphabet for c in text.lower()):
-        raise ValidationError('Буквы не русские')
-    try:
-        int(key)
-    except ValueError:
-        raise ValidationError('Неверная запись ключа')
+from alphabets import en_alphabet, ru_alphabet, digits
 
 
 def caesar_cipher(text: str, key: int, is_en: bool) -> str:
@@ -29,8 +6,8 @@ def caesar_cipher(text: str, key: int, is_en: bool) -> str:
     size = len(old_alphabet)
     new_alphabet = [old_alphabet[(i + key) % size] for i in range(size)]
     conversion = {old_alphabet[i]: new_alphabet[i] for i in range(size)}
-    new_digit = [digit[(i + key) % 10] for i in range(10)]
-    conversion_digit = {digit[i]: new_digit[i] for i in range(10)}
+    new_digit = [digits[(i + key) % 10] for i in range(10)]
+    conversion_digit = {digits[i]: new_digit[i] for i in range(10)}
     result = []
     for c in text:
         if c.isupper():

@@ -1,20 +1,30 @@
 from tkinter import *
 from tkinter import messagebox as mb
+from typing import Optional
 
-from tools import ValidationError, validate, caesar_cipher_hack
+from exceptions import ValidationError
+from tools import caesar_cipher_hack
+from utils.file_handlers import open_file
+from validation import caesar_validate
 
 
-def get_input_text() -> str | None:
-    text_list = input_text.get("1.0", END).strip().split('\n')
-    text = ''.join(text_list)
+def get_input_text() -> Optional[str]:
+    text = input_text.get("1.0", END)
     is_en = lang_var.get()
     try:
-        validate(text, is_en)
+        caesar_validate(text, is_en, is_en)
     except ValidationError as e:
         mb.showerror(title='Ошибка при вводе',
                      message=str(e))
         return
     return text
+
+
+def get_text_from_file():
+    with open_file() as file:
+        input_text.delete("1.0", END)
+        input_text.insert("1.0", file.read())
+    hack()
 
 
 def set_processed_text(text: str, key: int):
@@ -74,8 +84,10 @@ key_entry = Entry(key_frame)
 key_entry.place(relx=.3, relwidth=.7, relheight=1)
 
 # Выбор функции
-crypt_button = Button(frame_middle, text='Взлом!', command=hack)
-crypt_button.place(relx=.37, rely=.11, relwidth=.58)
+hack_button = Button(frame_middle, text='Взлом!', command=hack)
+hack_button.place(relx=.37, rely=.11, relwidth=.28)
+file_button = Button(frame_middle, text='Файл', command=get_text_from_file)
+file_button.place(relx=.67, rely=.11, relwidth=.28)
 
 # Основа для вывода текста
 frame_bottom = Frame(win, bg='blue')

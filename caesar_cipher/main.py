@@ -1,16 +1,18 @@
 from tkinter import *
 from tkinter import messagebox as mb
+from typing import Optional
 
-from tools import caesar_cipher, ValidationError, validate
+from exceptions import ValidationError
+from tools import caesar_cipher
+from validation import caesar_validate
 
 
-def get_input_text() -> tuple[str, int] | None:
-    text_list = input_text.get("1.0", END).strip().split('\n')
-    text = ''.join(text_list)
+def get_input_text() -> Optional[tuple[str, int]]:
+    text = input_text.get("1.0", END)
     key = key_entry.get()
     is_en = lang_var.get()
     try:
-        validate(text, key, is_en)
+        caesar_validate(text, key, is_en)
     except ValidationError as e:
         mb.showerror(title='Ошибка при вводе',
                      message=str(e))

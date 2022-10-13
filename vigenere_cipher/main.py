@@ -1,16 +1,18 @@
 from tkinter import *
 from tkinter import messagebox as mb
+from typing import Optional
 
-from tools import ValidationError, validate, vigenere_cipher
+from exceptions import ValidationError
+from tools import vigenere_cipher
+from validation import vigenere_validate
 
 
-def get_input_text() -> tuple[str, str] | None:
-    text_list = input_text.get("1.0", END).strip().split('\n')
-    text = ''.join(text_list)
+def get_input_text() -> Optional[tuple[str, str]]:
+    text = input_text.get("1.0", END)
     key = key_entry.get()
     is_en = lang_var.get()
     try:
-        validate(text, key, is_en)
+        vigenere_validate(text, key, is_en)
     except ValidationError as e:
         mb.showerror(title='Ошибка при вводе',
                      message=str(e))
