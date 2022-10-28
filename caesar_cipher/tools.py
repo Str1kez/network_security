@@ -1,4 +1,4 @@
-from alphabets import en_alphabet, ru_alphabet, digits
+from alphabets import digits, en_alphabet, ru_alphabet
 
 
 def caesar_cipher(text: str, key: int, is_en: bool) -> str:
@@ -16,4 +16,4 @@ def caesar_cipher(text: str, key: int, is_en: bool) -> str:
             result.append(conversion_digit.get(c))
         else:
             result.append(conversion.get(c, c))
-    return ''.join(result)
+    return "".join(result)
