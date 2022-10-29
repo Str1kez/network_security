@@ -13,10 +13,13 @@ caesar_hack:
 vigenere_cipher:
 	$$PYTHON vigenere_cipher/main.py
 
+vigenere_hack:
+	$$PYTHON vigenere_hack/main.py
+
 xor_cipher:
 	$$CONDA xor_cipher/main.py
 
 format:
 	$$PYTHON -m black -S -l 120 . && $$PYTHON -m isort .
 
-.PHONY: caesar_cipher caesar_hack vigenere_cipher xor_cipher
+.PHONY: caesar_cipher caesar_hack vigenere_cipher vigenere_hack xor_cipher
