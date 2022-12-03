@@ -26,11 +26,11 @@ def get_text_from_file():
     hack()
 
 
-def set_processed_text(text: str, key: int):
+def set_processed_text(text: str, key: str):
     output_text.delete("1.0", END)
     output_text.insert("1.0", text)
     key_entry.delete("0", END)
-    key_entry.insert("0", str(key))
+    key_entry.insert("0", key)
 
 
 def hack():
@@ -44,7 +44,7 @@ def hack():
 win = Tk()
 
 win["bg"] = "#fafafa"
-win.title("Взлом Шифра Цезаря")
+win.title("Взлом Шифра Виженера")
 win.geometry("600x450")
 win.resizable(False, False)
 

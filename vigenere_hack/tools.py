@@ -1,5 +1,6 @@
+import math
 from collections import Counter
-from pprint import pprint
+from itertools import zip_longest
 
 from alphabets import en_alphabet, ru_alphabet
 from caesar_hack.tools import caesar_cipher_hack
@@ -16,18 +17,20 @@ def get_index_coincidence(row: tuple[str]) -> float:
 
 
 def get_text_transposed(text: tuple, t: int) -> tuple[str]:
-    splitted_text = tuple(grouper(text, t, fillvalue='y'))
+    splitted_text = tuple(grouper(text, t, fillvalue=''))
     return tuple(zip(*splitted_text))
 
 
 def find_key_size(text: tuple) -> int:
-    extremum = float("-inf")
-    for t in range(2, len(text) // 2):
+    coincidence_dict = {}
+    t_list = []
+    for t in range(1, 30):
         rows = get_text_transposed(text, t)
-        mean_index_coincidence = sum(get_index_coincidence(row) for row in rows) / t
-        if extremum > mean_index_coincidence:
-            return t - 1
-        extremum = max(extremum, mean_index_coincidence)
+        division_index_coincidence = sum(get_index_coincidence(row) for row in rows) / t
+        coincidence_dict[t] = division_index_coincidence
+    for key, _ in sorted(coincidence_dict.items(), reverse=True, key=lambda x: x[1]):
+        t_list.append(key)
+    return math.gcd(*t_list[:5])
 
 
 def testing(text: str, alphabet_size: int) -> int:
@@ -43,19 +46,34 @@ def testing(text: str, alphabet_size: int) -> int:
     return max_index
 
 
-def vigenere_cipher_hack(raw_text: str, is_en: bool) -> tuple[str, int]:
+def vigenere_cipher_hack(raw_text: str, is_en: bool) -> tuple[str, str]:
     """
     TODO: Надо сделать правильное нахождение ключа и подбор сдвигов
     """
     alphabet = en_alphabet if is_en else ru_alphabet
     text = tuple(c for c in raw_text.lower() if c in alphabet)
-    key_size = testing("".join(text), len(alphabet))
-    # key_size = find_key_size(text)
-    rows = get_text_transposed(text, 6)
-    print("".join(rows[0]))
-    row_after_quantity_analysis = [caesar_cipher_hack("".join(row), is_en)[0] for row in rows]
-    print("".join(row_after_quantity_analysis[0]))
-    return "".join("".join(t) for t in zip(*row_after_quantity_analysis))
+    key_size = find_key_size(text)
+    rows = get_text_transposed(text, key_size)
+    decrypted_row_list = []
+    key = ''
+    for row in rows:
+        decrypted_row, offset = caesar_cipher_hack("".join(row), is_en)
+        key += alphabet[offset]
+        decrypted_row_list.append(decrypted_row)
+    decrypted_text = "".join("".join(row) for row in zip_longest(*decrypted_row_list, fillvalue=''))
+    result = []
+    i = 0
+    for c in raw_text:
+        if c.lower() in alphabet:
+            dc = decrypted_text[i]
+            if c.isupper():
+                result.append(dc.upper())
+            else:
+                result.append(dc)
+            i += 1
+        else:
+            result.append(c)
+    return "".join(result), key
     # return row_after_quantity_analysis
 
 
@@ -74,7 +92,7 @@ text = """влцдутжбюцхъяррмшбрхцэооэцгбрьцмйфк
 эндадъярьеюэлэтчоубъцэфэвлнёэгфдсэвэёкбсчоукгаутэыпуббцчкпэгючсаъбэнэфърк
 ацхёваетуфяепьрювържадфёжбьфутощоявьъгупчршуитеачйчирамчюфчоуяюонкяжы
 кгсцбрясшчйотъъжрсщчл"""
-with open("tests/ru_encrypted_vigenere.txt") as f:
-    text = f.read()
-    pprint(vigenere_cipher_hack(text, False))
+# with open("tests/ru_encrypted_vigenere.txt") as f:
+    # text = f.read()
+print(vigenere_cipher_hack(text, False))
 # print(testing())
