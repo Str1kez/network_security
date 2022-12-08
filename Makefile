@@ -19,6 +19,12 @@ vigenere_hack:
 xor_cipher:
 	$$CONDA xor_cipher/main.py
 
+expmod:
+	$$PYTHON RSA/expmod/main.py
+
+euclidean:
+	$$PYTHON RSA/euclidean/main.py
+
 format:
 	$$PYTHON -m black -S -l 120 . && $$PYTHON -m isort .
 
