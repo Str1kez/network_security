@@ -25,6 +25,9 @@ expmod:
 euclidean:
 	$$PYTHON RSA/euclidean/main.py
 
+rsa:
+	$$PYTHON RSA/rsa/main.py
+
 format:
 	$$PYTHON -m black -S -l 120 . && $$PYTHON -m isort .
 
