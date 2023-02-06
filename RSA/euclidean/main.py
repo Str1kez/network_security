@@ -3,7 +3,7 @@ from tkinter import messagebox as mb
 from typing import Optional
 
 from exceptions import ValidationError
-from RSA.euclidean.tools import euclidean_algorithm
+from RSA.euclidean.tools import extended_euclidean_algorithm
 from RSA.validation import euclidean_validation
 
 
@@ -29,7 +29,7 @@ def solve():
     if data is None:
         return
     a, b = data
-    s, t = euclidean_algorithm(a, b)
+    _, s, t = extended_euclidean_algorithm(a, b)
     set_processed_text(str(s), str(t))
 
 

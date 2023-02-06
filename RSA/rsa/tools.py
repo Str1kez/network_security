@@ -1,5 +1,6 @@
 import random
 
+from RSA.euclidean.tools import extended_euclidean_algorithm
 from RSA.expmod.tools import fast_bin_pow
 
 
@@ -7,7 +8,10 @@ def euler_function(p: int, q: int) -> int:
     return (p - 1) * (q - 1)
 
 
-def miller_rabin(num, rounds=5) -> bool:
+def miller_rabin(num: int, rounds: int = 5) -> bool:
+    """
+    Проверка на простоту
+    """
     if num == 2:
         return True
     if num % 2 == 0:
@@ -29,11 +33,28 @@ def miller_rabin(num, rounds=5) -> bool:
                 return False
             if x == num - 1:
                 break
+        else:
+            return False
     return True
 
 
-def get_prime(bit_size: int) -> int:
-    x = random.randint(2 ** (bit_size - 1), 2 ** bit_size)
-    while not miller_rabin(x, 5):
-        x = random.randint(2 ** (bit_size - 1), 2 ** bit_size)
+def get_prime(bit: int) -> int:
+    x = random.randint(2 ** (bit - 1), 2**bit)
+    while not miller_rabin(x):
+        x = random.randint(2 ** (bit - 1), 2**bit)
     return x
+
+
+def get_public_key(euler: int, length: int = 4) -> int:
+    key_len = 10 ** (len(str(euler)) // 3)
+    # key = random.randint(10 ** (key_len - 1), 10**key_len)
+    key = random.randint(key_len, 10 * key_len)
+    while extended_euclidean_algorithm(key, euler)[0] != 1:
+        key = random.randint(key_len, 10 * key_len)
+        # key = random.randint(10 ** (key_len - 1), 10**key_len)
+
+    return key
+
+
+def get_private_key(euler: int, public_key: int) -> int:
+    return extended_euclidean_algorithm(public_key, euler)[1] % euler
