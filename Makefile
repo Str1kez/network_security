@@ -28,6 +28,9 @@ euclidean:
 rsa:
 	$$PYTHON RSA/rsa/main.py
 
+dh:
+	$$PYTHON DH/main.py
+
 format:
 	$$PYTHON -m black -S -l 120 . && $$PYTHON -m isort .
 
