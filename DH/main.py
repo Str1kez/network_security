@@ -2,8 +2,8 @@ from tkinter import *
 from tkinter import messagebox as mb
 from typing import Callable
 
-from DH.tools import get_primitive_root, get_safe_prime
-from DH.validation import diffie_hellman_validation
+from DH.tools import bsgs, get_primitive_root, get_safe_prime
+from DH.validation import bsgs_validation, diffie_hellman_validation
 from exceptions import ValidationError
 from RSA.expmod import fast_bin_pow
 
@@ -30,13 +30,24 @@ def generate():
 
 
 def migrate():
+    y_log_entry.delete(0, END)
+    g_log_entry.delete(0, END)
+    p_log_entry.delete(0, END)
     y_log_entry.insert(0, y.get())
     g_log_entry.insert(0, g.get())
     p_log_entry.insert(0, p.get())
 
 
 def calculate():
-    pass
+    data = validate_data(bsgs_validation, y_log_entry.get(), g_log_entry.get(), p_log_entry.get())
+    if data is None:
+        return
+    y, g, p = data
+    a = bsgs(g, y, p)
+    if a is None:
+        return
+    a_log_entry.delete(0, END)
+    a_log_entry.insert(0, str(a))
 
 
 win = Tk()

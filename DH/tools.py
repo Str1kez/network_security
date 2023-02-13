@@ -1,4 +1,5 @@
 import random
+from math import ceil, sqrt
 
 from RSA.euclidean import euclidean_algorithm_simple
 from RSA.expmod import fast_bin_pow
@@ -59,6 +60,19 @@ def get_primitive_root(bit_len: int, p: int) -> int:
             fast_bin_pow(g, euler, p) == 1
             and euclidean_algorithm_simple(g, p) == 1
             and fast_bin_pow(g, euler // 2, p) != 1
+            and solovay_strassen(g)
         ):
             return g
         g = random.randint(2 ** (bit_len - 1), 2**bit_len)
+
+
+def bsgs(g: int, h: int, n: int) -> int | None:
+    m = ceil(sqrt(n - 1))
+    giant_step = {fast_bin_pow(g, i, n): i for i in range(m)}
+
+    c = fast_bin_pow(g, m * (n - 2), n)
+    for j in range(m):
+        baby_step = h * fast_bin_pow(c, j, n) % n
+        if baby_step in giant_step:
+            return (m * j + giant_step[baby_step]) % n
+    return None
